@@ -12,6 +12,7 @@ import SubmitButton from "../shared/SubmitButton";
 import { useState } from "react";
 import { UserFormSchema } from "@/lib/schemas";
 import { useRouter } from "next/navigation";
+import { createUser } from "@/lib/patient";
 
 const PatientForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -36,12 +37,16 @@ const PatientForm = () => {
     setIsLoading(true);
 
     try {
-      const user = await createSecureServer({ name, email, phone });
+      const userData = { name, email, phone };
+      const user = await createUser(userData);
       if (user) {
+        console.log(user);
         router.push(`/patients/${user.$id}/register`);
+        setIsLoading(false);
       }
     } catch (error) {
       console.log(error);
+      setIsLoading(false);
     }
   };
   return (
